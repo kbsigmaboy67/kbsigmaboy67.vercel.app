@@ -1,96 +1,257 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script defer src="/_vercel/insights/script.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
-    />
-    <title>Vercel HTML Starter</title>
-    <meta
-      name="description"
-      content="High-performance HTML based website template."
-    />
-  </head>
-  <body>
-    <h1>Vercel HTML Starter</h1>
-    <p>
-      This template is a simple, but powerful single
-      <code>index.html</code> file deployed to
-      <a href="https://vercel.com">Vercel</a>. When your site is deployed, all
-      static assets (like HTML, JavaScript, CSS, images, and more) are deployed
-      globally to every
-      <a href="https://vercel.com/docs/concepts/edge-network/overview"
-        >Vercel Edge Network</a
-      >
-      region.
-    </p>
-    <h2>Simple, privacy-friendly analytics</h2>
-    <p>
-      Want to understand your visitor traffic? Vercel Analytics gives you
-      first-party, privacy-friendly traffic analytics for your HTML site. This
-      template is already configured using the following script:
-    </p>
-    <pre><code>&lt;script defer src="/_vercel/insights/script.js"&gt;&lt;/script&gt;</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/analytics">Vercel Analytics</a>.
-    </p>
-    <h2>Integrated with git</h2>
-    <p>
-      Deploying updates to your site is as simple as
-      <code>git push</code> thanks to Vercel's advanced
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-      Support for GitHub, GitLab, Bitbucket is zero-configuration, and with the
-      flexible Vercel CLI and API, you can integrate with any tool possible.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-    </p>
-    <h2>Fast <code>gzip</code> compression</h2>
-    <p>
-      To help ensure the smallest possible file sizes for your static assets,
-      the Vercel Edge Network compresses files by default using
-      <code>gzip</code>. You can also optionally use
-      <code>brotli</code> compressesion if you prefer.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/edge-network/compression"
-        >compression</a
-      >.
-    </p>
-    <h2>Advanced routing configuration</h2>
-    <p>
-      Vercel gives you a variety of ways to configure the routing of your
-      website. For example, adding redirects, rewrites, or headers to your page.
-      While you can use <code>vercel.json</code> to define these through JSON,
-      you can also express your routing configuration as code using
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-    <p>
-      Middleware runs before the
-      <a href="https://vercel.com/docs/concepts/edge-network/caching"
-        >Vercel Edge Network Cache</a
-      >, so you can configure routing exactly as your application needs. For
-      example, this template uses <code>middleware.js</code> defined in the root
-      of the repository to add additional security headers to the site:
-    </p>
-    <pre><code>referrer-policy: origin-when-cross-origin
-strict-transport-security: max-age=31536000; includeSubDomains; preload
-x-content-type-options: nosniff
-x-dns-prefetch-control: on
-x-frame-options: DENY</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-  </body>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>kbsigmaboy67</title>
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: #0f172a;
+    color: white;
+  }
+  iframe, img.fullscreen {
+    border: none;
+    width: 100%;
+    height: 100vh;
+    object-fit: contain;
+    background: black;
+  }
+  .tool {
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
+  }
+  textarea, input {
+    width: 100%;
+    background: #020617;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 8px;
+  }
+  button {
+    background: #2563eb;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    margin: 4px 0;
+  }
+  label { display:block; margin-top:10px; cursor:pointer; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+(() => {
+  const raw = location.hash.slice(1) || location.search.slice(1);
+  const app = document.getElementById("app");
+
+  // =========================
+  // MODE SETTING (persisted)
+  // =========================
+  const MODE_KEY = "openMode";
+  let useBlob = localStorage.getItem(MODE_KEY);
+  if (useBlob === null) {
+    useBlob = "blob";
+    localStorage.setItem(MODE_KEY, "blob");
+  }
+
+  function isBlobMode() {
+    return localStorage.getItem(MODE_KEY) === "blob";
+  }
+
+  function renderHTML(html) {
+    if (isBlobMode()) {
+      const blob = new Blob([html], { type: "text/html" });
+      location.replace(URL.createObjectURL(blob));
+    } else {
+      document.open();
+      document.write(html);
+      document.close();
+    }
+  }
+
+  function renderImage(dataUrl) {
+    if (isBlobMode()) {
+      const html = `
+<!DOCTYPE html>
+<body style="margin:0;background:black">
+<img src="${dataUrl}" style="width:100%;height:100vh;object-fit:contain">
+</body>`;
+      renderHTML(html);
+    } else {
+      document.body.innerHTML = "";
+      const img = document.createElement("img");
+      img.src = dataUrl;
+      img.className = "fullscreen";
+      document.body.appendChild(img);
+    }
+  }
+
+  function renderURL(url) {
+    const html = `
+<!DOCTYPE html>
+<html>
+<body style="margin:0;background:black">
+<iframe src="${url.replace(/"/g, "&quot;")}" style="border:none;width:100%;height:100vh"></iframe>
+</body>
+</html>`;
+    renderHTML(html);
+  }
+
+  // =============================
+  // LOADER MODE
+  // =============================
+  if (raw) {
+
+    // Image mode
+    if (raw.startsWith("image/")) {
+      const data = raw.slice(6);
+      renderImage(data);
+      return;
+    }
+
+    function tryBase64(str) {
+      try {
+        if (!/^[A-Za-z0-9+/=]+$/.test(str)) return null;
+        const d = atob(str);
+        if (d.trim().startsWith("<")) return d;
+      } catch {}
+      return null;
+    }
+
+    if (raw.toLowerCase().startsWith("%3c")) {
+      renderHTML(decodeURIComponent(raw));
+      return;
+    }
+
+    let decoded;
+    try { decoded = decodeURIComponent(raw); } catch { decoded = raw; }
+
+    if (decoded.trim().startsWith("<")) {
+      renderHTML(decoded);
+      return;
+    }
+
+    const b64 = tryBase64(raw);
+    if (b64) {
+      renderHTML(b64);
+      return;
+    }
+
+    if (/^(https?:\/\/|blob:|data:)/i.test(decoded)) {
+      renderURL(decoded);
+      return;
+    }
+
+    return;
+  }
+
+  // =============================
+  // TOOL MODE
+  // =============================
+  const baseURL = location.origin + location.pathname;
+
+  app.innerHTML = `
+  <div class="tool">
+    <h1>Encoder Toolkit</h1>
+
+    <label><div style="background:none;width:288px;height:30px;padding:10px;border-radius:8px;margin-top:10px; color:inherit;">
+      Use Blob mode (recommended)
+      <input type="checkbox" id="modeToggle"></div>
+    </label>
+
+    <h2>1. Base64 Encoder</h2>
+    <textarea id="b64in" rows="3"></textarea>
+    <button onclick="b64encode()">Encode</button>
+    <textarea id="b64out" rows="2"></textarea>
+
+    <h2>2. URI Encoder</h2>
+    <textarea id="uriin" rows="3"></textarea>
+    <button onclick="uriencode()">Encode</button>
+    <textarea id="uriout" rows="2"></textarea>
+
+    <h2>3. HTML → Shareable Base64 URL</h2>
+    <textarea id="htmlin" rows="5"></textarea>
+    <button onclick="generateURL()">Generate</button>
+    <input id="urlout" readonly />
+
+    <h2>4. Image → Base64 Data URL</h2>
+    <input type="file" id="imgfile" accept="image/*">
+    <input id="imgurl" placeholder="or paste image URL here">
+    <button onclick="convertImage()">Convert</button>
+
+    <label>
+    <div style="background:none;width:288px;height:30px;padding:10px;border-radius:8px;margin-top:10px; color:inherit;">Add domain prefix<input type="checkbox" id="withDomain" checked></div>
+    </label>
+
+    <button onclick="copyImage()">Copy to Clipboard</button>
+    
+    <h2>5. Other Tools</h2>
+    <a href="compressor.html" target="_blank">Image Compressor/Downsizer</a>
+  </div>
+  `;
+
+  // Initialize toggle
+  const toggle = document.getElementById("modeToggle");
+  toggle.checked = isBlobMode();
+  toggle.onchange = () => {
+    localStorage.setItem(MODE_KEY, toggle.checked ? "blob" : "direct");
+  };
+
+  let lastImageData = "";
+
+  window.b64encode = () => {
+    b64out.value = btoa(unescape(encodeURIComponent(b64in.value)));
+  };
+
+  window.uriencode = () => {
+    uriout.value = encodeURIComponent(uriin.value);
+  };
+
+  window.generateURL = () => {
+    const b64 = btoa(unescape(encodeURIComponent(htmlin.value)));
+    urlout.value = baseURL + "#" + b64;
+  };
+
+  window.convertImage = async () => {
+    try {
+      let blob;
+      if (imgfile.files[0]) blob = imgfile.files[0];
+      else if (imgurl.value) {
+        const res = await fetch(imgurl.value);
+        if (!res.ok) throw new Error();
+        blob = await res.blob();
+      } else return alert("Upload image or paste URL.");
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        lastImageData = reader.result;
+        alert("Image converted. Ready to copy.");
+      };
+      reader.readAsDataURL(blob);
+    } catch {
+      alert("Image failed (CORS blocked). Use upload instead.");
+    }
+  };
+
+  window.copyImage = async () => {
+    if (!lastImageData) return alert("No image converted yet.");
+
+    const text = withDomain.checked
+      ? baseURL + "#image/" + lastImageData
+      : lastImageData;
+
+    await navigator.clipboard.writeText(text);
+    alert("Copied!");
+  };
+
+})();
+</script>
+</body>
 </html>
